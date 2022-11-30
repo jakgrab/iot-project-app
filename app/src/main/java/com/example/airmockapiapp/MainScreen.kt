@@ -1,5 +1,6 @@
 package com.example.airmockapiapp
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -81,7 +82,6 @@ fun MainScreen() {
                     )
                 }
 
-
                 Spacer(modifier = Modifier.height(50.dp))
 
                 val responseState = apiViewModel.responseState.collectAsState()
@@ -97,13 +97,14 @@ private fun createRetrofitClient(textFieldValue: MutableState<String>): ApiInter
         if (textFieldValue.value.endsWith("/"))
             textFieldValue.value
         else textFieldValue.value.plus("/")
-
+    Log.d("API", "Create retrofit client from url: $url")
     return try {
         Retrofit.Builder()
             .baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiInterface::class.java)
+
     } catch (e: IllegalArgumentException) {
         return null
     }

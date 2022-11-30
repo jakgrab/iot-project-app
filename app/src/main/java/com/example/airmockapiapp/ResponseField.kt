@@ -1,5 +1,6 @@
 package com.example.airmockapiapp
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,32 +20,35 @@ import androidx.compose.ui.unit.dp
 fun ResponseField(
     responseState: State<String?>,
 ) {
+
     if (responseState.value == null)
         Box(modifier = Modifier.fillMaxSize()) {
 
         }
-    Card(
-        modifier = Modifier
-            .size(
-                width = 350.dp,
-                height = 300.dp
-            ),
-        shape = RoundedCornerShape(15.dp),
-        backgroundColor = Color(0xFF1F1843),
-        border = BorderStroke(1.dp, Color(0xFF216430)),
-        elevation = 2.dp
-    ) {
-        Box(
+        Log.d("API", "RESPONSE FIELD: response = ${responseState}")
+        Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp),
-            contentAlignment = Alignment.TopStart
+                .size(
+                    width = 350.dp,
+                    height = 300.dp
+                ),
+            shape = RoundedCornerShape(15.dp),
+            backgroundColor = Color(0xFF1F1843),
+            border = BorderStroke(1.dp, Color(0xFF216430)),
+            elevation = 2.dp
         ) {
-            Text(
-                text = "Api Response: ${responseState.value}",
-                color = Color.White
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                Text(
+                    text = "Api Response: ${responseState.value}",
+                    color = Color.White
+                )
 
+            }
         }
-    }
+
 }
