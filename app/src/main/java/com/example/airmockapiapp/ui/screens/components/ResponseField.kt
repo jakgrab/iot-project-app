@@ -25,7 +25,7 @@ fun ResponseField(
         Box(modifier = Modifier.fillMaxSize()) {
 
         }
-        Log.d("API", "RESPONSE FIELD: response = ${responseState}")
+        Log.d("API", "RESPONSE FIELD: response = $responseState")
         Card(
             modifier = Modifier
                 .size(

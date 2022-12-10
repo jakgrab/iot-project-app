@@ -1,4 +1,4 @@
-package com.example.airmockapiapp
+package com.example.airmockapiapp.data.remote
 
 import com.google.gson.JsonObject
 import okhttp3.ResponseBody
