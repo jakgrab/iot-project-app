@@ -1,10 +1,10 @@
 package com.example.airmockapiapp.data
 
 import android.util.Log
-import androidx.compose.runtime.State
+import com.example.airmockapiapp.data.caller.CallState
+import com.example.airmockapiapp.data.caller.Caller
 import com.example.airmockapiapp.data.local.GraphRepository
 import com.example.airmockapiapp.data.model.GraphResponse
-import com.example.airmockapiapp.ui.screens.ApiViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -22,7 +22,7 @@ class DataCaller(
 
     // Returns channelFlow which calls API in a loop with a delay
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun call(delay: Long, query: String): Flow<Response<GraphResponse>> {
+    override fun call(delay: Long, query: String): Flow<Response<List<GraphResponse>>> {
 
         return channelFlow {
             while (!isClosedForSend) {

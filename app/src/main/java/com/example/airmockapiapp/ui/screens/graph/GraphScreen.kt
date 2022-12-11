@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.airmockapiapp.ui.screens.ApiViewModel
+import com.example.airmockapiapp.ui.screens.GraphViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -20,7 +20,7 @@ import com.github.mikephil.charting.data.LineDataSet
 
 
 @Composable
-fun GraphScreen(viewModel: ApiViewModel) {
+fun GraphScreen(viewModel: GraphViewModel) {
 
     val graphData = viewModel.graphData.collectAsState()
     val lineData = viewModel.lineData.collectAsState()
@@ -29,11 +29,19 @@ fun GraphScreen(viewModel: ApiViewModel) {
         LineDataSet(
             listOf(Entry(0f,0f)),
             "Initial"
+        ),
+        LineDataSet(
+            listOf(Entry(0f,0f)),
+            "Initial"
+        ),
+        LineDataSet(
+            listOf(Entry(0f,0f)),
+            "Initial"
         )
     )
 
-    val temperatureLineData = remember(graphData.value) {
-        mutableStateOf<LineData?>(lineData.value)
+    val rollPitchYawLineData = remember(graphData.value) {
+        mutableStateOf(lineData.value)
     }
 
     val showGraph = remember {
@@ -61,10 +69,12 @@ fun GraphScreen(viewModel: ApiViewModel) {
                 },
                 update = {
                     Log.d("tag", "Update called")
-                    it.data = temperatureLineData.value ?: initialDataForChart//lineData.value//LineData(lineDataSet.value)
+                    it.data = rollPitchYawLineData.value ?: initialDataForChart//lineData.value//LineData(lineDataSet.value)
                     it.invalidate()
                 }
             )
+        } else {
+            Box(modifier = Modifier.fillMaxWidth().height(250.dp))
         }
 
         Button(
@@ -90,7 +100,7 @@ fun GraphScreen(viewModel: ApiViewModel) {
 
         Button(
             onClick = {
-                Log.d("Tag", "Data: ${temperatureLineData.value}")
+                Log.d("Tag", "Data: ${rollPitchYawLineData.value}")
             }
         ) {
             Text(text = "Get log")

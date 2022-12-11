@@ -85,5 +85,8 @@ dependencies {
     // MPAndroid charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    //Color Picker
+    implementation "com.github.skydoves:colorpicker-compose:1.0.0"
+
 
 }
