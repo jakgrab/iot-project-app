@@ -2,7 +2,6 @@ package com.example.airmockapiapp.ui.screens.ledmatrix
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,13 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.airmockapiapp.data.model.ColorData
+import com.example.airmockapiapp.ui.navigation.AirScreens
 import com.github.skydoves.colorpicker.compose.*
 
-@Preview
+
 @Composable
-fun LedMatrix() {
+fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController) {
     val colorList = List(64) { Color.White }
 
     val nwm = MutableList(64) { Color.White }
@@ -86,12 +87,19 @@ fun LedMatrix() {
                     }
                 }
             }
+
+            Button(onClick = { navController.navigate(AirScreens.SensorScreen.name) }) {
+                Text(text = "Go to sensors")
+            }
+            Button(onClick = { navController.popBackStack() }) {
+                Text(text = "Go back")
+            }
+
         } else {
-            //isColorPicked.value = false// ???????
             Log.d("tag", "Showing color picker")
             ColorPicker(
+                ledViewModel = ledViewModel,
                 controller = controller,
-                // no .value b4
                 color = pickedColor,
                 currentIndex = currentIndex,
                 colorState = colorState,
@@ -106,14 +114,18 @@ fun LedMatrix() {
 @Composable
 fun ColorPicker(
     modifier: Modifier = Modifier,
+    ledViewModel: LedScreenViewModel,
     controller: ColorPickerController,
     color: MutableState<Color>,
     currentIndex: MutableState<Int?>,
-    colorState:  MutableState<List<Color>>,
+    colorState: MutableState<List<Color>>,
     isColorPicked: MutableState<Boolean>,
     isColorPickerVisible: MutableState<Boolean>
 ) {
-    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         HsvColorPicker(
             modifier = modifier.height(300.dp),
@@ -123,6 +135,12 @@ fun ColorPicker(
                     colorState.value = colorState.value.toMutableList().apply {
                         this[currentIndex.value!!] = colorEnvelope.color
                     }
+//                    ledViewModel.postLedColors(
+//                        ColorData(
+//                            index = currentIndex.value!!,
+//                            color = colorEnvelope.color.toString()
+//                        )
+//                    )
                     //color.value = colorEnvelope.color testing
                 }
             }
@@ -138,6 +156,12 @@ fun ColorPicker(
         Button(
             onClick = {
                 isColorPicked.value = true
+                ledViewModel.postLedColors(
+                        ColorData(
+                            index = currentIndex.value!!,
+                            color = colorState.value[currentIndex.value!!].toString()
+                        )
+                    )
                 isColorPickerVisible.value = false
                 Log.d("tag", "Button: isColorPicked: ${isColorPicked.value}")
             }
@@ -170,7 +194,7 @@ fun Led(
 @Composable
 fun Test(onClick: () -> Unit, content: @Composable () -> Unit = {}) {
 
-    Card(modifier= Modifier
+    Card(modifier = Modifier
         .padding(5.dp)
         .height(40.dp)
         .width(50.dp)

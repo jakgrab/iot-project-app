@@ -12,7 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.airmockapiapp.ui.screens.GraphViewModel
+import androidx.navigation.NavHostController
+import com.example.airmockapiapp.ui.navigation.AirScreens
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -20,7 +21,7 @@ import com.github.mikephil.charting.data.LineDataSet
 
 
 @Composable
-fun GraphScreen(viewModel: GraphViewModel) {
+fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
 
     val graphData = viewModel.graphData.collectAsState()
     val lineData = viewModel.lineData.collectAsState()
@@ -74,7 +75,9 @@ fun GraphScreen(viewModel: GraphViewModel) {
                 }
             )
         } else {
-            Box(modifier = Modifier.fillMaxWidth().height(250.dp))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp))
         }
 
         Button(
@@ -97,14 +100,16 @@ fun GraphScreen(viewModel: GraphViewModel) {
             Text(text = "Stop graph")
         }
 
-
-        Button(
-            onClick = {
-                Log.d("Tag", "Data: ${rollPitchYawLineData.value}")
-            }
-        ) {
-            Text(text = "Get log")
+        Button(onClick = { navController.navigate(AirScreens.LedScreen.name) }) {
+            Text(text = "Go to LEDScreen")
         }
+//        Button(
+//            onClick = {
+//                Log.d("Tag", "Data: ${rollPitchYawLineData.value}")
+//            }
+//        ) {
+//            Text(text = "Get log")
+//        }
     }
 
 }

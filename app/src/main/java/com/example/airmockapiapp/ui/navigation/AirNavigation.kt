@@ -5,25 +5,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.airmockapiapp.ui.screens.GraphViewModel
+import com.example.airmockapiapp.ui.screens.graph.GraphViewModel
 import com.example.airmockapiapp.ui.screens.graph.GraphScreen
+import com.example.airmockapiapp.ui.screens.ledmatrix.LedMatrix
+import com.example.airmockapiapp.ui.screens.ledmatrix.LedScreenViewModel
+import com.example.airmockapiapp.ui.screens.sensor.SensorScreen
+import com.example.airmockapiapp.ui.screens.sensor.SensorViewModel
 
 @Composable
 fun AirNavigation() {
 
     val navController = rememberNavController()
-    val viewModel: GraphViewModel = viewModel()
-    //val graphRepository = GraphRepository()
+    val graphViewModel: GraphViewModel = viewModel()
+    val sensorViewModel: SensorViewModel = viewModel()
+    val ledViewModel: LedScreenViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = AirScreens.GraphScreen.name
     ) {
         composable(AirScreens.GraphScreen.name) {
-            GraphScreen(viewModel)
+            GraphScreen(graphViewModel, navController)
         }
-
+        composable(AirScreens.LedScreen.name) {
+            LedMatrix(ledViewModel, navController)
+        }
+        composable(AirScreens.SensorScreen.name) {
+            SensorScreen(sensorViewModel, navController)
+        }
     }
-
-
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.airmockapiapp.data.remote.ApiInterface
-import com.example.airmockapiapp.ui.screens.GraphViewModel
+import com.example.airmockapiapp.ui.screens.graph.GraphViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

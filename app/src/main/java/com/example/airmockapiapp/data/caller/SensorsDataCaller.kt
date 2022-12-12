@@ -1,10 +1,8 @@
-package com.example.airmockapiapp.data
+package com.example.airmockapiapp.data.caller
 
 import android.util.Log
-import com.example.airmockapiapp.data.caller.CallState
-import com.example.airmockapiapp.data.caller.GraphCaller
 import com.example.airmockapiapp.data.local.AirRepository
-import com.example.airmockapiapp.data.model.GraphResponse
+import com.example.airmockapiapp.data.model.SensorData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -14,16 +12,13 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 
-class GraphDataCaller(
-    //private val viewModel: ApiViewModel,
+class SensorsDataCaller(
     private val callingState: StateFlow<CallState>,
     private val repository: AirRepository
-): GraphCaller {
+) : SensorsCaller{
 
-    // Returns channelFlow which calls API in a loop with a delay
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun callGraphData(delay: Long, query: String): Flow<Response<List<GraphResponse>>> {
-
+    override fun callSensorData(delay: Long): Flow<Response<SensorData>> {
         return channelFlow {
             while (!isClosedForSend) {
                 if (callingState.value == CallState.INACTIVE) {
@@ -33,10 +28,8 @@ class GraphDataCaller(
                 }
                 Log.d("Tag", "CALLER RUNNING")
                 delay(delay)
-                send(repository.getGraphData())
+                send(repository.getSensorData())
             }
         }.flowOn(Dispatchers.IO)
     }
-
-
 }

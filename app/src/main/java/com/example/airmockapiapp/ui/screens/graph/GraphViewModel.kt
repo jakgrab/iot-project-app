@@ -1,4 +1,4 @@
-package com.example.airmockapiapp.ui.screens
+package com.example.airmockapiapp.ui.screens.graph
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.airmockapiapp.data.remote.ApiInterface
 import com.example.airmockapiapp.data.caller.CallState
 import com.example.airmockapiapp.data.Constants
-import com.example.airmockapiapp.data.DataCaller
-import com.example.airmockapiapp.data.local.GraphRepository
+import com.example.airmockapiapp.data.GraphDataCaller
+import com.example.airmockapiapp.data.local.AirRepository
 import com.example.airmockapiapp.data.model.GraphResponse
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -41,12 +41,12 @@ class GraphViewModel : ViewModel() {
     private val _lineData = MutableStateFlow<LineData?>(null)
     val lineData = _lineData.asStateFlow()
 
-    private val repository = GraphRepository()
+    private val repository = AirRepository()
 
 
     fun getGraphData() {
-        val dataCaller = DataCaller(callingState, repository)
-        val data = dataCaller.call(5000L, "Hi")
+        val dataCaller = GraphDataCaller(callingState, repository)
+        val data = dataCaller.callGraphData(5000L, "Hi")
         viewModelScope.launch(Dispatchers.IO) {
             data.collect {
                 collectData(it)
