@@ -1,10 +1,9 @@
 package com.example.airmockapiapp.data.local
 
 import com.example.airmockapiapp.data.Constants
-import com.example.airmockapiapp.data.model.ColorData
 import com.example.airmockapiapp.data.model.GraphResponse
 import com.example.airmockapiapp.data.model.SensorData
-import com.example.airmockapiapp.data.remote.GraphApi
+import com.example.airmockapiapp.data.remote.SenseHatApi
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -15,7 +14,7 @@ class AirRepository() {
     suspend fun getGraphData(): Response<List<GraphResponse>> {
         return api.getGraphData()
     }
-    suspend fun postLEDcolor(requestBody: RequestBody): Response<ResponseBody> {
+    suspend fun postLedColors(requestBody: RequestBody): Response<ResponseBody> {
         return api.postLEDcolor(requestBody)
     }
     suspend fun getSensorData(): Response<SensorData> {
@@ -23,10 +22,10 @@ class AirRepository() {
     }
 
     companion object {
-        val api: GraphApi = Retrofit.Builder()
+        val api: SenseHatApi = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(GraphApi::class.java)
+            .create(SenseHatApi::class.java)
     }
 }

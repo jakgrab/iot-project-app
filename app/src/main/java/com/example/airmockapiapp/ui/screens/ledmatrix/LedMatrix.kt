@@ -44,7 +44,7 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
         mutableStateOf(false)
     }
 
-    val colorState = remember() { //colorList
+    val colorState = remember {
         mutableStateOf<List<Color>>(listOfColors)
     }
 
@@ -65,7 +65,7 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
                 bottom = 16.dp
             )
         ) {
-            itemsIndexed(listOfColors) { index, item ->
+            itemsIndexed(listOfColors) { index, _ ->
 
                 Led(color = colorState.value[index]) {
                     isColorPickerVisible.value = true
@@ -89,11 +89,19 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
             )
         }
 
-        Button(onClick = { navController.navigate(AirScreens.SensorScreen.name) }) {
+        Button(
+            onClick = {
+                navController.navigate(AirScreens.SensorScreen.name)
+            }
+        ) {
             Text(text = "Go to sensors")
         }
 
-        Button(onClick = { navController.popBackStack() }) {
+        Button(
+            onClick = {
+                navController.popBackStack()
+            }
+        ) {
             Text(text = "Go back")
         }
     }
@@ -119,11 +127,10 @@ fun ColorPicker(
             modifier = modifier.height(200.dp),
             controller = controller,
             onColorChanged = { colorEnvelope: ColorEnvelope ->
-                if (currentIndex.value != null) {
-                    indexList.forEach { ledIndex ->
-                        colorState.value = colorState.value.toMutableList().apply {
-                            this[ledIndex] = colorEnvelope.color
-                        }
+
+                indexList.forEach { ledIndex ->
+                    colorState.value = colorState.value.toMutableList().apply {
+                        this[ledIndex] = colorEnvelope.color
                     }
                 }
             }
@@ -139,14 +146,16 @@ fun ColorPicker(
         Button(
             onClick = {
                 isColorPicked.value = true
-                colorState.value.forEach {
-                    Log.d("tag", "Color state list element: $it")
-                }
+//                colorState.value.forEach {
+//                    Log.d("tag", "Color state list element: $it")
+//                }
                 ledViewModel.postLedColors(
-                    ColorData(
-                        index = currentIndex.value!!,
-                        color = colorState.value[currentIndex.value!!].toString()
-                    )
+                    indexList = indexList,
+                    colorList = colorState.value
+//                    ColorData(
+//                        index = currentIndex.value!!,
+//                        color = colorState.value[currentIndex.value!!].toString()
+//                    )
                 )
                 isColorPickerVisible.value = false
                 indexList.clear()
