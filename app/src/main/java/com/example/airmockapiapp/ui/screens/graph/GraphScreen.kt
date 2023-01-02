@@ -2,8 +2,9 @@ package com.example.airmockapiapp.ui.screens.graph
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,15 +29,15 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
 
     val initialDataForChart = LineData(
         LineDataSet(
-            listOf(Entry(0f,0f)),
+            listOf(Entry(0f, 0f)),
             "Initial"
         ),
         LineDataSet(
-            listOf(Entry(0f,0f)),
+            listOf(Entry(0f, 0f)),
             "Initial"
         ),
         LineDataSet(
-            listOf(Entry(0f,0f)),
+            listOf(Entry(0f, 0f)),
             "Initial"
         )
     )
@@ -49,67 +50,79 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
         mutableStateOf(false)
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        if (showGraph.value) {
-
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                factory = { context ->
-                    LineChart(context).apply {
-                        data =
-                            initialDataForChart//lineData.value//LineData(lineDataSet.value)
-                        invalidate()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "navigate back"
+                        )
                     }
-                },
-                update = {
-                    Log.d("tag", "Update called")
-                    it.data = rollPitchYawLineData.value ?: initialDataForChart//lineData.value//LineData(lineDataSet.value)
-                    it.invalidate()
                 }
             )
-        } else {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp))
         }
-
-        Button(
-            onClick = {
-                viewModel.getGraphData()
-                showGraph.value = true
-            }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it.calculateTopPadding()),
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Start Graph")
-        }
 
-        Spacer(modifier = Modifier.height(40.dp))
+            if (showGraph.value) {
 
-        Button(
-            onClick = {
-                showGraph.value = false
-                viewModel.cancelGraphDataStream()
+                AndroidView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    factory = { context ->
+                        LineChart(context).apply {
+                            data =
+                                initialDataForChart//lineData.value//LineData(lineDataSet.value)
+                            invalidate()
+                        }
+                    },
+                    update = {
+                        Log.d("tag", "Update called")
+                        it.data = rollPitchYawLineData.value
+                            ?: initialDataForChart//lineData.value//LineData(lineDataSet.value)
+                        it.invalidate()
+                    }
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
             }
-        ) {
-            Text(text = "Stop graph")
+
+            Button(
+                onClick = {
+                    viewModel.getGraphData()
+                    showGraph.value = true
+                }
+            ) {
+                Text("Start Graph")
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Button(
+                onClick = {
+                    showGraph.value = false
+                    viewModel.cancelGraphDataStream()
+                }
+            ) {
+                Text(text = "Stop Graph")
+            }
         }
 
-        Button(onClick = { navController.navigate(AirScreens.LedScreen.name) }) {
-            Text(text = "Go to LEDScreen")
-        }
-//        Button(
-//            onClick = {
-//                Log.d("Tag", "Data: ${rollPitchYawLineData.value}")
-//            }
-//        ) {
-//            Text(text = "Get log")
-//        }
     }
-
 }

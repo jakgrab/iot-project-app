@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.airmockapiapp.ui.screens.graph.GraphViewModel
 import com.example.airmockapiapp.ui.screens.graph.GraphScreen
+import com.example.airmockapiapp.ui.screens.landing.LandingScreen
 import com.example.airmockapiapp.ui.screens.ledmatrix.LedMatrix
 import com.example.airmockapiapp.ui.screens.ledmatrix.LedScreenViewModel
 import com.example.airmockapiapp.ui.screens.sensor.SensorScreen
@@ -22,8 +23,11 @@ fun AirNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = AirScreens.GraphScreen.name
+        startDestination = AirScreens.LandingScreen.name
     ) {
+        composable(AirScreens.LandingScreen.name) {
+            LandingScreen(navController)
+        }
         composable(AirScreens.GraphScreen.name) {
             GraphScreen(graphViewModel, navController)
         }

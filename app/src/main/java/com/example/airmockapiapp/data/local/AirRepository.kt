@@ -1,6 +1,7 @@
 package com.example.airmockapiapp.data.local
 
 import com.example.airmockapiapp.data.Constants
+import com.example.airmockapiapp.data.model.ColorData
 import com.example.airmockapiapp.data.model.GraphResponse
 import com.example.airmockapiapp.data.model.SensorData
 import com.example.airmockapiapp.data.remote.SenseHatApi
@@ -14,8 +15,9 @@ class AirRepository() {
     suspend fun getGraphData(): Response<List<GraphResponse>> {
         return api.getGraphData()
     }
-    suspend fun postLedColors(requestBody: RequestBody): Response<ResponseBody> {
-        return api.postLEDcolor(requestBody)
+    // (body: RequestBody) b4
+    suspend fun postLedColors(colorData: ColorData): Response<ResponseBody> {
+        return api.postLEDcolor(colorData)
     }
     suspend fun getSensorData(): Response<SensorData> {
         return api.getSensorData()

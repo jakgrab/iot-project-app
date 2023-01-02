@@ -1,6 +1,7 @@
 package com.example.airmockapiapp.ui.screens.ledmatrix
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,17 +9,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.airmockapiapp.data.model.ColorData
 import com.example.airmockapiapp.ui.navigation.AirScreens
 import com.github.skydoves.colorpicker.compose.*
 
@@ -30,6 +31,9 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
 
     val indexList = mutableListOf<Int>()
 
+    val indexListState = remember {
+        mutableStateListOf<Int>()
+    }
     val controller = rememberColorPickerController()
 
     val currentIndex = remember {
@@ -40,6 +44,9 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
         mutableStateOf(false)
     }
 
+//    val indexListTest = remember(indexList) {
+//        mutableStateOf<List>(indexList)
+//    }
     val isColorPicked = remember {
         mutableStateOf(false)
     }
@@ -48,61 +55,64 @@ fun LedMatrix(ledViewModel: LedScreenViewModel, navController: NavHostController
         mutableStateOf<List<Color>>(listOfColors)
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        isColorPicked.value = false
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(8),
-            modifier = Modifier,
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "navigate back"
+                        )
+                    }
+                }
             )
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it.calculateTopPadding()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            itemsIndexed(listOfColors) { index, _ ->
 
-                Led(color = colorState.value[index]) {
-                    isColorPickerVisible.value = true
+            isColorPicked.value = false
 
-                    indexList.add(index)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(8),
+                modifier = Modifier,
+                contentPadding = PaddingValues(
+                    start = 12.dp,
+                    top = 16.dp,
+                    end = 12.dp,
+                    bottom = 16.dp
+                )
+            ) {
+                itemsIndexed(listOfColors) { index, _ ->
 
-                    currentIndex.value = index
+                    Led(color = colorState.value[index]) {
+                        indexListState.add(index)
+                        Log.d("tag", "Added index: $index")
+                        isColorPickerVisible.value = true
+                        currentIndex.value = index
+                    }
                 }
             }
-        }
-
-        if (isColorPickerVisible.value) {
-            ColorPicker(
-                ledViewModel = ledViewModel,
-                controller = controller,
-                currentIndex = currentIndex,
-                colorState = colorState,
-                isColorPickerVisible = isColorPickerVisible,
-                isColorPicked = isColorPicked,
-                indexList = indexList
-            )
-        }
-
-        Button(
-            onClick = {
-                navController.navigate(AirScreens.SensorScreen.name)
+            AnimatedVisibility(visible = isColorPickerVisible.value) {
+                ColorPicker(
+                    ledViewModel = ledViewModel,
+                    controller = controller,
+                    colorState = colorState,
+                    isColorPickerVisible = isColorPickerVisible,
+                    isColorPicked = isColorPicked,
+                    indexListState = indexListState
+                    //indexList = indexList
+                )
             }
-        ) {
-            Text(text = "Go to sensors")
-        }
 
-        Button(
-            onClick = {
-                navController.popBackStack()
-            }
-        ) {
-            Text(text = "Go back")
         }
     }
 }
@@ -112,11 +122,11 @@ fun ColorPicker(
     modifier: Modifier = Modifier,
     ledViewModel: LedScreenViewModel,
     controller: ColorPickerController,
-    currentIndex: MutableState<Int?>,
     colorState: MutableState<List<Color>>,
     isColorPicked: MutableState<Boolean>,
     isColorPickerVisible: MutableState<Boolean>,
-    indexList: MutableList<Int>
+    indexListState: SnapshotStateList<Int>
+    //indexList: MutableList<Int>
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -128,7 +138,8 @@ fun ColorPicker(
             controller = controller,
             onColorChanged = { colorEnvelope: ColorEnvelope ->
 
-                indexList.forEach { ledIndex ->
+                indexListState.forEach { ledIndex ->
+                    Log.d("tag", "Index: $ledIndex")
                     colorState.value = colorState.value.toMutableList().apply {
                         this[ledIndex] = colorEnvelope.color
                     }
@@ -150,7 +161,7 @@ fun ColorPicker(
 //                    Log.d("tag", "Color state list element: $it")
 //                }
                 ledViewModel.postLedColors(
-                    indexList = indexList,
+                    indexList = indexListState,
                     colorList = colorState.value
 //                    ColorData(
 //                        index = currentIndex.value!!,
@@ -158,8 +169,8 @@ fun ColorPicker(
 //                    )
                 )
                 isColorPickerVisible.value = false
-                indexList.clear()
-
+                //indexList.clear()
+                indexListState.clear()
             }
         ) {
             Text(text = "Done")

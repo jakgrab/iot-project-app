@@ -1,5 +1,6 @@
 package com.example.airmockapiapp.data.remote
 
+import com.example.airmockapiapp.data.model.ColorData
 import com.example.airmockapiapp.data.model.GraphResponse
 import com.example.airmockapiapp.data.model.SensorData
 import okhttp3.RequestBody
@@ -15,8 +16,9 @@ interface SenseHatApi {
     suspend fun getGraphData(): Response<List<GraphResponse>>
 
     @Headers("Accept: application/json")
-    @POST("/color")
-    suspend fun postLEDcolor(@Body requestBody: RequestBody): Response<ResponseBody>
+    @POST("/")
+    // @Body body: RequestBody b4
+    suspend fun postLEDcolor(@Body colorData: ColorData): Response<ResponseBody>
 
     @GET("/sensors")
     suspend fun getSensorData(): Response<SensorData>

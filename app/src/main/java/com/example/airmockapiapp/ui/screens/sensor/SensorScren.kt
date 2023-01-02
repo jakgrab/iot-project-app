@@ -2,11 +2,10 @@ package com.example.airmockapiapp.ui.screens.sensor
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.Divider
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -36,55 +35,77 @@ fun SensorScreen(viewModel: SensorViewModel, navController: NavController) {
 
     val callingState = viewModel.callingState.collectAsState()
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "navigate back"
+                        )
+                    }
+                }
+            )
+        }
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(450.dp)
-                .padding(10.dp)
-                .border(width = 1.dp, color = Color.DarkGray),
+                .fillMaxSize()
+                .padding(
+                    top = it.calculateTopPadding(),
+                    bottom = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Weather Condition", fontSize = 20.sp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
+                    .padding(10.dp)
+                    .border(width = 1.dp, color = Color.DarkGray),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(text = "Weather Condition", fontSize = 20.sp)
 
-            WeatherConditions(data = sensorDataState.value, fontSize = 16.sp)
+                WeatherConditions(data = sensorDataState.value, fontSize = 16.sp)
 
-            Divider(modifier = Modifier.fillMaxWidth(0.8f), color = Color.Gray)
-            Text(text = "Orientation", fontSize = 20.sp)
+                Divider(modifier = Modifier.fillMaxWidth(0.8f), color = Color.Gray)
+                Text(text = "Orientation", fontSize = 20.sp)
 
-            Orientation(data = sensorDataState.value)
+                Orientation(data = sensorDataState.value)
 
-            Divider(modifier = Modifier.fillMaxWidth(0.8f), color = Color.Gray)
-            Text(text = "Joystick", fontSize = 20.sp)
+                Divider(modifier = Modifier.fillMaxWidth(0.8f), color = Color.Gray)
+                Text(text = "Joystick", fontSize = 20.sp)
 
-            JoystickMovement(data = sensorDataState.value)
+                JoystickMovement(data = sensorDataState.value)
 
-        }
-        Button(onClick = {
-            if (callingState.value == CallState.INACTIVE) {
-                viewModel.resumeDataStream()
             }
-            viewModel.getSensorData()
-        }) {
-            Text(text = "Start")
-        }
-        if (callingState.value == CallState.ACTIVE) {
             Button(onClick = {
-                viewModel.cancelDataStream()
+                if (callingState.value == CallState.INACTIVE) {
+                    viewModel.resumeDataStream()
+                }
+                viewModel.getSensorData()
             }) {
-                Text(text = "Stop data stream")
+                Text(text = "Start")
             }
-        }
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Go Back")
+            if (callingState.value == CallState.ACTIVE) {
+                Button(onClick = {
+                    viewModel.cancelDataStream()
+                }) {
+                    Text(text = "Stop data stream")
+                }
+            }
+            Button(onClick = { navController.popBackStack() }) {
+                Text("Go Back")
+            }
         }
     }
 }
@@ -107,7 +128,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Spacer(modifier = Modifier.width(5.dp))
 
             if (data != null) {
-                Text(text = data.temp.toString(),fontSize = fontSize)
+                Text(text = data.temp.toString(), fontSize = fontSize)
             }
             Text(text = "°", fontSize = fontSize)
         }
@@ -118,7 +139,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Text(text = "Press.:", fontSize = fontSize)
             Spacer(modifier = Modifier.width(5.dp))
             if (data != null) {
-                Text(text = data.press.toString(),fontSize = fontSize)
+                Text(text = data.press.toString(), fontSize = fontSize)
             }
             Text(text = "hPa", fontSize = fontSize)
         }
@@ -129,7 +150,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Text(text = "Hum.:", fontSize = fontSize)
             Spacer(modifier = Modifier.width(5.dp))
             if (data != null) {
-                Text(text = data.hum.toString(),fontSize = fontSize)
+                Text(text = data.hum.toString(), fontSize = fontSize)
             }
 
             Text(text = "%", fontSize = fontSize)
