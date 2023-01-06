@@ -38,4 +38,4 @@ Once you have selected the LED's and chosen the color, tap the "Done" button to 
 
 #### Displaying Sensor Values
 To display the real-time values from all of the sensors on the Sense HAT,   tap the "Display Sensor Values" button in the main menu.   
-This will open a new screen where you can see the values being updated in real time.**/
+This will open a new screen where you can see the values being updated in real time.
