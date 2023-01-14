@@ -1,23 +1,16 @@
 package com.example.airmockapiapp.ui.screens.ledmatrix
 
-import android.util.Log
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.airmockapiapp.data.local.SenseHatRepository
-import com.example.airmockapiapp.data.model.ColorData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LedScreenViewModel : ViewModel() {
 
     private val repository = SenseHatRepository()
 
-    fun postLedColors(
-        indexList: List<Int>,
-        colorList: List<Color>
-    ) {
+//    fun postLedColors(
+//        indexList: List<Int>,
+//        colorList: List<Color>
+//    ) {
 //        val colorDataList = convertToListOfColorData(indexList, colorList)
 //        //val jsonObject = JsonObject()
 //        val jsonArray = JsonArray()
@@ -34,24 +27,24 @@ class LedScreenViewModel : ViewModel() {
 //
 //        val requestBody = jsonArrayToString.toRequestBody("application/json".toMediaTypeOrNull())
 
-        val testPosition = indexToPositionList(indexList.first())
-        val testRgb = colorToRgbList(colorList.first())
-
-        val testColorData = ColorData(position = testPosition, rgb = testRgb)
-
-        viewModelScope.launch(Dispatchers.IO) {
-//            val response = repository.postLedColors(requestBody)
-            val response = repository.postLedColors(testColorData)
-
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("tag", "Upload successful, message: ${response.message()}")
-                } else {
-                    Log.d("tag", "Upload failed, message: ${response.message()}")
-                }
-            }
-        }
-    }
+//        val testPosition = indexToPositionList(indexList.first())
+//        val testRgb = colorToRgbList(colorList.first())
+//
+//        val testColorData = ColorData(position = testPosition, rgb = testRgb)
+//
+//        viewModelScope.launch(Dispatchers.IO) {
+////            val response = repository.postLedColors(requestBody)
+//            val response = repository.postLedColors(testColorData)
+//
+//            withContext(Dispatchers.Main) {
+//                if (response.isSuccessful) {
+//                    Log.d("tag", "Upload successful, message: ${response.message()}")
+//                } else {
+//                    Log.d("tag", "Upload failed, message: ${response.message()}")
+//                }
+//            }
+//        }
+//    }
 
 //    private fun convertToListOfColorData(
 //        indexList: List<Int>,
@@ -64,15 +57,15 @@ class LedScreenViewModel : ViewModel() {
 //        return colorDataList
 //    }
 
-    private fun indexToPositionList(index: Int): List<Int> {
-        val row = index / 8
-        val column = index % 8
-        return listOf(row, column)
-    }
-
-    private fun colorToRgbList(color: Color): List<Int> {
-        return listOf(color.red.toInt(), color.green.toInt(), color.blue.toInt())
-    }
+//    private fun indexToPositionList(index: Int): List<Int> {
+//        val row = index / 8
+//        val column = index % 8
+//        return listOf(row, column)
+//    }
+//
+//    private fun colorToRgbList(color: Color): List<Int> {
+//        return listOf(color.red.toInt(), color.green.toInt(), color.blue.toInt())
+//    }
 }
 
 

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airmockapiapp.data.caller.CallState
-import com.example.airmockapiapp.data.caller.SensorsDataCaller
 import com.example.airmockapiapp.data.local.SenseHatRepository
 import com.example.airmockapiapp.data.model.SensorData
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +23,12 @@ class SensorViewModel: ViewModel() {
     private val repository = SenseHatRepository()
 
     fun getSensorData() {
-        val dataCaller = SensorsDataCaller(callingState, repository)
-        val data = dataCaller.callSensorData(1000L)
+        //val dataCaller = SensorsDataCaller(callingState, repository)
+        //val data = dataCaller.callSensorData(1000L)
         viewModelScope.launch(Dispatchers.IO) {
-            data.collect {
-                collectSensorData(it)
-            }
+//            data.collect {
+//                collectSensorData(it)
+//            }
         }
     }
 

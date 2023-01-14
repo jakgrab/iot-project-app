@@ -2,8 +2,8 @@ package com.example.airmockapiapp.data.local
 
 import com.example.airmockapiapp.data.Constants
 import com.example.airmockapiapp.data.model.ColorData
+import com.example.airmockapiapp.data.model.LedParams
 import com.example.airmockapiapp.data.model.ColorStatus
-import com.example.airmockapiapp.data.model.SensorBody
 import com.example.airmockapiapp.data.model.SensorData
 import com.example.airmockapiapp.data.remote.SenseHatApi
 import okhttp3.ResponseBody
@@ -28,7 +28,7 @@ class SenseHatRepository {
         )
     }
 
-    suspend fun postLedColors(colorDataList: List<ColorData>): Response<ResponseBody> {
+    suspend fun postLedColors(colorDataList: ColorData): Response<ResponseBody> {
         return api.postLedColors(colorDataList)
     }
 

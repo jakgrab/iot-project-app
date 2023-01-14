@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.airmockapiapp.data.remote.ApiInterface
 import com.example.airmockapiapp.data.caller.CallState
 import com.example.airmockapiapp.data.Constants
-import com.example.airmockapiapp.data.GraphDataCaller
+import com.example.airmockapiapp.data.caller.DataCaller
 import com.example.airmockapiapp.data.local.SenseHatRepository
 import com.example.airmockapiapp.data.model.SensorBody
 import com.github.mikephil.charting.data.Entry
@@ -47,12 +47,12 @@ class GraphViewModel : ViewModel() {
 
 
     fun getGraphData() {
-        val dataCaller = GraphDataCaller(callingState, repository)
-        val data = dataCaller.callGraphData(5000L, "Hi")
+        //val dataCaller = DataCaller(callingState, repository)
+        //val data = dataCaller.callSensorData()
         viewModelScope.launch(Dispatchers.IO) {
-            data.collect {
-                collectData(it)
-            }
+            //data.collect {
+                //collectData(it)
+            //}
         }
     }
 
@@ -72,9 +72,9 @@ class GraphViewModel : ViewModel() {
             _listOfEntries.forEach { it.removeAt(0) }
         }
 
-        _rollList.add(Entry(data[0].x, data[0].y))
-        _pitchList.add(Entry(data[1].x, data[1].y))
-        _yawList.add(Entry(data[2].x, data[2].y))
+//        _rollList.add(Entry(data[0].x, data[0].y))
+//        _pitchList.add(Entry(data[1].x, data[1].y))
+//        _yawList.add(Entry(data[2].x, data[2].y))
 
         Log.d("tag", "First list: ${_listOfEntries[0]}")
         Log.d("tag", "Second list: ${_listOfEntries[1]}")
@@ -134,28 +134,6 @@ class GraphViewModel : ViewModel() {
 
     fun resumeGraphDataStream() {
         _callingState.value = CallState.ACTIVE
-    }
-
-    // OLD getData
-    fun getData(apiInterface: ApiInterface) {
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = apiInterface.getData()
-
-            if (response.isSuccessful) {
-
-                //Log.d("API", "Response: ${response.body()?.string()}")
-                // NOTE: Somehow response.body.string can be only called once
-
-                val result = response.body()?.string()
-                if (result != null) {
-                    _responseState.emit(result)
-                }
-                Log.d("API", "responseState.value = ${_responseState.value}")
-            } else {
-                _responseState.value = "Api call unsuccessful, error: ${response.code()}"
-            }
-        }
     }
 
 }

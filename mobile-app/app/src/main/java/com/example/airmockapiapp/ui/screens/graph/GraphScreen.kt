@@ -1,6 +1,8 @@
 package com.example.airmockapiapp.ui.screens.graph
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,10 +13,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.example.airmockapiapp.ui.navigation.AirScreens
+import com.example.airmockapiapp.R
+import com.example.airmockapiapp.ui.screens.MainViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -22,10 +27,14 @@ import com.github.mikephil.charting.data.LineDataSet
 
 
 @Composable
-fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
+fun GraphScreen(viewModel: MainViewModel, navController: NavHostController) {
 
+    val context = LocalContext.current
     val graphData = viewModel.graphData.collectAsState()
     val lineData = viewModel.lineData.collectAsState()
+    val lineDataSets = viewModel.lineDataSets.collectAsState()
+
+    val llinedata = convertToLineData(context, lineDataSets.value)
 
     val initialDataForChart = LineData(
         LineDataSet(
@@ -43,7 +52,8 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
     )
 
     val rollPitchYawLineData = remember(graphData.value) {
-        mutableStateOf(lineData.value)
+        mutableStateOf(llinedata)
+        //mutableStateOf(lineData.value)
     }
 
     val showGraph = remember {
@@ -56,7 +66,11 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
                 title = {},
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = {
+                            // we don't want to get any data if we don't observe it
+                            viewModel.cancelDataStream()
+                            navController.popBackStack()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBack,
@@ -88,11 +102,11 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
                             invalidate()
                         }
                     },
-                    update = {
+                    update = { lineChart ->
                         Log.d("tag", "Update called")
-                        it.data = rollPitchYawLineData.value
+                        lineChart.data = rollPitchYawLineData.value
                             ?: initialDataForChart//lineData.value//LineData(lineDataSet.value)
-                        it.invalidate()
+                        lineChart.invalidate()
                     }
                 )
             } else {
@@ -103,26 +117,61 @@ fun GraphScreen(viewModel: GraphViewModel, navController: NavHostController) {
                 )
             }
 
-            Button(
-                onClick = {
-                    viewModel.getGraphData()
-                    showGraph.value = true
+            AnimatedVisibility(visible = !showGraph.value) {
+                Button(
+                    onClick = {
+                        viewModel.getSensorData()
+                        showGraph.value = true
+                    }
+                ) {
+                    Text("Start Graph")
                 }
-            ) {
-                Text("Start Graph")
             }
+
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
-                onClick = {
-                    showGraph.value = false
-                    viewModel.cancelGraphDataStream()
+            AnimatedVisibility(visible = showGraph.value) {
+                Button(
+                    onClick = {
+                        showGraph.value = false
+                        // TODO commented for now
+                        //viewModel.cancelDataStream()
+                    }
+                ) {
+                    Text(text = "Stop Graph")
                 }
-            ) {
-                Text(text = "Stop Graph")
             }
+
         }
 
     }
+
+
+}
+fun convertToLineData(context: Context, lineDataSets: List<LineDataSet>?): LineData {
+    return if (!lineDataSets.isNullOrEmpty()) LineData(
+        lineDataSets[0].apply {
+            color = ContextCompat.getColor(context, R.color.roll)
+        },
+        lineDataSets[1].apply {
+            color = ContextCompat.getColor(context, R.color.pitch)
+        },
+        lineDataSets[2].apply {
+            color = ContextCompat.getColor(context, R.color.yaw)
+        },
+    ) else  LineData(
+        LineDataSet(
+            listOf(Entry(0f, 0f)),
+            "Initial"
+        ),
+        LineDataSet(
+            listOf(Entry(0f, 0f)),
+            "Initial"
+        ),
+        LineDataSet(
+            listOf(Entry(0f, 0f)),
+            "Initial"
+        )
+    )
 }

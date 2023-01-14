@@ -1,6 +1,7 @@
 package com.example.airmockapiapp.data.remote
 
 import com.example.airmockapiapp.data.model.ColorData
+import com.example.airmockapiapp.data.model.LedParams
 import com.example.airmockapiapp.data.model.ColorStatus
 import com.example.airmockapiapp.data.model.SensorData
 import okhttp3.ResponseBody
@@ -8,7 +9,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface SenseHatApi {
-    // TODO joystick value may not be needed
+
     @GET("/")
     suspend fun getSensorData(
         @Query("temperature") temperature: String = "c",
@@ -20,8 +21,10 @@ interface SenseHatApi {
 
     @Headers("Accept: application/json")
     @POST("/led")
-    suspend fun postLedColors(@Body colorDataList: List<ColorData>): Response<ResponseBody>
+    suspend fun postLedColors(@Body requests: ColorData): Response<ResponseBody>
 
-    @GET("/")
+    @GET("/led")
     suspend fun getLedColors(): Response<ColorStatus>
 }
+
+

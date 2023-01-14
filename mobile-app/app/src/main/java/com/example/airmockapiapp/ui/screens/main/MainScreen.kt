@@ -68,7 +68,7 @@ fun MainScreen() {
                                     )
                                 }
                             } else {
-                                apiViewModel.getData(api!!)
+                                //apiViewModel.getData(api!!)
                             }
                         }
                     },

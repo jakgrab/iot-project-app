@@ -1,5 +1,6 @@
 package com.example.airmockapiapp.ui.screens.sensor
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -21,11 +22,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.airmockapiapp.data.caller.CallState
 import com.example.airmockapiapp.data.model.SensorData
+import com.example.airmockapiapp.ui.screens.MainViewModel
 import com.example.airmockapiapp.ui.theme.AirMockApiAppTheme
 
 
 @Composable
-fun SensorScreen(viewModel: SensorViewModel, navController: NavController) {
+fun SensorScreen(viewModel: MainViewModel, navController: NavController) {
 
     val sensorData = viewModel.sensorData.collectAsState()
 
@@ -41,7 +43,10 @@ fun SensorScreen(viewModel: SensorViewModel, navController: NavController) {
                 title = {},
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = {
+                            viewModel.cancelDataStream()
+                            navController.popBackStack()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBack,
@@ -88,19 +93,20 @@ fun SensorScreen(viewModel: SensorViewModel, navController: NavController) {
                 JoystickMovement(data = sensorDataState.value)
 
             }
-            Button(onClick = {
-                if (callingState.value == CallState.INACTIVE) {
-                    viewModel.resumeDataStream()
-                }
-                viewModel.getSensorData()
-            }) {
-                Text(text = "Start")
-            }
-            if (callingState.value == CallState.ACTIVE) {
+            AnimatedVisibility(visible = callingState.value == CallState.INACTIVE) {
                 Button(onClick = {
-                    viewModel.cancelDataStream()
+                    viewModel.resumeDataStream()
                 }) {
-                    Text(text = "Stop data stream")
+                    Text(text = "Start")
+                }
+            }
+            AnimatedVisibility(visible = callingState.value == CallState.ACTIVE) {
+                if (callingState.value == CallState.ACTIVE) {
+                    Button(onClick = {
+                        viewModel.cancelDataStream()
+                    }) {
+                        Text(text = "Stop data stream")
+                    }
                 }
             }
             Button(onClick = { navController.popBackStack() }) {
@@ -112,13 +118,12 @@ fun SensorScreen(viewModel: SensorViewModel, navController: NavController) {
 
 @Composable
 private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
             .padding(6.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
@@ -128,7 +133,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Spacer(modifier = Modifier.width(5.dp))
 
             if (data != null) {
-                Text(text = data.temp.toString(), fontSize = fontSize)
+                Text(text = data.temperature.toString(), fontSize = fontSize)
             }
             Text(text = "°", fontSize = fontSize)
         }
@@ -139,7 +144,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Text(text = "Press.:", fontSize = fontSize)
             Spacer(modifier = Modifier.width(5.dp))
             if (data != null) {
-                Text(text = data.press.toString(), fontSize = fontSize)
+                Text(text = data.pressure.toString(), fontSize = fontSize)
             }
             Text(text = "hPa", fontSize = fontSize)
         }
@@ -150,7 +155,7 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
             Text(text = "Hum.:", fontSize = fontSize)
             Spacer(modifier = Modifier.width(5.dp))
             if (data != null) {
-                Text(text = data.hum.toString(), fontSize = fontSize)
+                Text(text = data.humidity.toString(), fontSize = fontSize)
             }
 
             Text(text = "%", fontSize = fontSize)
@@ -160,13 +165,12 @@ private fun WeatherConditions(data: SensorData?, fontSize: TextUnit) {
 
 @Composable
 private fun Orientation(data: SensorData?) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
             .padding(6.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
@@ -174,7 +178,7 @@ private fun Orientation(data: SensorData?) {
         ) {
             Text(text = "Roll:")
             if (data != null) {
-                Text(text = data.roll.toString())
+                Text(text = data.orientation[0].toString())
             }
             Text(text = "°")
         }
@@ -184,7 +188,7 @@ private fun Orientation(data: SensorData?) {
         ) {
             Text(text = "Pitch:")
             if (data != null) {
-                Text(text = data.pitch.toString())
+                Text(text = data.orientation[1].toString())
             }
             Text(text = "°")
         }
@@ -194,7 +198,7 @@ private fun Orientation(data: SensorData?) {
         ) {
             Text(text = "Yaw.:")
             if (data != null) {
-                Text(text = data.yaw.toString())
+                Text(text = data.orientation[2].toString())
             }
             Text(text = "°")
         }
@@ -204,21 +208,20 @@ private fun Orientation(data: SensorData?) {
 @Composable
 private fun JoystickMovement(data: SensorData?) {
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
             .padding(6.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Up:")
+            Text(text = "Horizontal position:")
             if (data != null) {
-                Text(text = data.joy_up)
+                Text(text = data.joystick_position[0].toString())
             }
 
         }
@@ -226,9 +229,9 @@ private fun JoystickMovement(data: SensorData?) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Down:")
+            Text(text = "Vertical position:")
             if (data != null) {
-                Text(text = data.joy_down)
+                Text(text = data.joystick_position[1].toString())
             }
 
         }
@@ -236,21 +239,13 @@ private fun JoystickMovement(data: SensorData?) {
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Left.:")
+            Text(text = "Pressed:")
             if (data != null) {
-                Text(text = data.joy_left)
+                Text(text = data.joystick_clicks.toString())
             }
 
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Right.:")
-            if (data != null) {
-                Text(text = data.joy_right)
-            }
-        }
+
     }
 }
 

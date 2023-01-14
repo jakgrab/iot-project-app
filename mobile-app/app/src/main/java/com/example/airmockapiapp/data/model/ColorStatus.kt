@@ -1,7 +1,7 @@
 package com.example.airmockapiapp.data.model
 
 data class ColorStatus(
-    val diodes: List<Diode>
+    val diodes: List<List<Float>>
 )
 
 data class Diode(

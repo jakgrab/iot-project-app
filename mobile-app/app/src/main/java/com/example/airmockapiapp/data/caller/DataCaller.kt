@@ -15,15 +15,16 @@ import retrofit2.Response
 
 class DataCaller(
     //private val viewModel: ApiViewModel,
-    private val callingState: StateFlow<CallState>,
     private val repository: SenseHatRepository
 ) : Caller {
-
 
     // Returns channelFlow which calls API in a loop with a delay
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun callSensorData(delay: Long): Flow<Response<SensorData>> {
+    override fun callSensorData(
+        callingState: StateFlow<CallState>,
+        delay: Long
+    ): Flow<Response<SensorData>> {
 
         return channelFlow {
             while (!isClosedForSend) {
@@ -35,13 +36,20 @@ class DataCaller(
                 Log.d("Tag", "CALLER RUNNING")
                 delay(delay)
                 send(
-                    repository.getSensorData("", "", "", "", ""))
+                    repository.getSensorData(
+                        temperature = "c",
+                        humidity = "%",
+                        pressure = "hpa",
+                        orientation = "d",
+                        joystick = ""
+                    )
+                )
             }
         }.flowOn(Dispatchers.IO)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun callLedColors(delay: Long): Flow<Response<ColorStatus>> {
+    override fun callLedColors(callingState: StateFlow<CallState>): Flow<Response<ColorStatus>> {
         return channelFlow {
             while (!isClosedForSend) {
                 if (callingState.value == CallState.INACTIVE) {
@@ -50,7 +58,7 @@ class DataCaller(
                     return@channelFlow
                 }
                 Log.d("Tag", "CALLER RUNNING")
-                delay(delay)
+                delay(10 * 1000L)
                 send(repository.getLedColors())
             }
         }.flowOn(Dispatchers.IO)

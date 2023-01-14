@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.airmockapiapp.ui.navigation.AirScreens
+import com.example.airmockapiapp.ui.screens.MainViewModel
 
 @Composable
-fun LandingScreen(navController: NavController) {
+fun LandingScreen(viewModel: MainViewModel, navController: NavController) {
+
     val modifier: Modifier = Modifier
         .fillMaxWidth(0.6f)
         .height(60.dp)
@@ -37,18 +39,24 @@ fun LandingScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DestinationButton(modifier = modifier, buttonText = "Orientation Chart") {
+                    viewModel.resumeDataStream()
+                    viewModel.getSensorData()
                     navController.navigate(AirScreens.GraphScreen.name)
                 }
 
                 Spacer(modifier = Modifier.height(50.dp))
 
                 DestinationButton(modifier = modifier, buttonText = "Set LED Colors") {
+                    viewModel.resumeDataStream()
+                    viewModel.getLedStatus()
                     navController.navigate(AirScreens.LedScreen.name)
                 }
 
                 Spacer(modifier = Modifier.height(50.dp))
 
                 DestinationButton(modifier = modifier, buttonText = "Display Sensor Values") {
+                    viewModel.resumeDataStream()
+                    viewModel.getSensorData()
                     navController.navigate(AirScreens.SensorScreen.name)
                 }
             }
@@ -69,7 +77,7 @@ private fun DestinationButton(
         elevation = ButtonDefaults.elevation(defaultElevation = 6.dp, pressedElevation = 10.dp),
         shape = RoundedCornerShape(20.dp)
     ) {
-        Text(text = buttonText, fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
+        Text(text = buttonText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
