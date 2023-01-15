@@ -37,7 +37,7 @@ class LedUtils {
         val row = index / 8
         val column = index % 8
         Log.d("LED", "row: $column, column: $row")
-        return listOf(row, column)
+        return listOf(column, row)
     }
 
     private fun colorToRgbList(color: Color): List<Int> {
