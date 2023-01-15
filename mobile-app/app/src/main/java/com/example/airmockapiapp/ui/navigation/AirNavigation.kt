@@ -14,6 +14,7 @@ import com.example.airmockapiapp.ui.screens.ledmatrix.LedMatrix
 import com.example.airmockapiapp.ui.screens.ledmatrix.LedScreenViewModel
 import com.example.airmockapiapp.ui.screens.sensor.SensorScreen
 import com.example.airmockapiapp.ui.screens.sensor.SensorViewModel
+import com.example.airmockapiapp.ui.screens.settings.SettingsScreen
 
 @Composable
 fun AirNavigation() {
@@ -30,6 +31,9 @@ fun AirNavigation() {
     ) {
         composable(AirScreens.LandingScreen.name) {
             LandingScreen(mainViewModel, navController)
+        }
+        composable(AirScreens.SettingsScreen.name) {
+            SettingsScreen(mainViewModel, navController)
         }
         composable(AirScreens.GraphScreen.name) {
             GraphScreen(mainViewModel, navController)

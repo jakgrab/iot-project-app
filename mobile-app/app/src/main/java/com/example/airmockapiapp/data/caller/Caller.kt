@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Response
 
 interface Caller {
-    fun callSensorData(callingState: StateFlow<CallState>, delay: Long): Flow<Response<SensorData>>
+    fun callSensorData(callingState: StateFlow<CallState>, delay: Float): Flow<Response<SensorData>>
 
     fun callLedColors(callingState: StateFlow<CallState>): Flow<Response<ColorStatus>>
 }

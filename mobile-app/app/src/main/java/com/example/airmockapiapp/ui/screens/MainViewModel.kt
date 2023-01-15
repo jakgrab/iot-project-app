@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
     private val _delay = MutableStateFlow<Long>(1000L)
     val delay = _delay.asStateFlow()
 
-    var ddelay: Long = 3000L
+    var ddelay: Float = 3f
 
     private val graphUtils = GraphUtils()
     private val ledUtils = LedUtils()
@@ -200,9 +200,12 @@ class MainViewModel : ViewModel() {
         indexList: List<Int>,
         colorList: List<Color>
     ) {
-
         val colorData = ledUtils.toColorData(indexList, colorList)
+        colorData.requests.forEach {
+            Log.d("LED", "colorData: ${it.position}")
+            Log.d("LED", "colorData: ${it.rgb}")
 
+        }
         viewModelScope.launch(Dispatchers.IO) {
 //
             val response = repository.postLedColors(colorData)

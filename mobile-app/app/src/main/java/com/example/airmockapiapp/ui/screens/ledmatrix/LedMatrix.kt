@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.airmockapiapp.data.caller.CallState
-import com.example.airmockapiapp.ui.navigation.AirScreens
 import com.example.airmockapiapp.ui.screens.MainViewModel
 import com.github.skydoves.colorpicker.compose.*
 
@@ -29,20 +28,18 @@ import com.github.skydoves.colorpicker.compose.*
 @Composable
 fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
 
-    val listOfColors = MutableList(64) { Color.White }
 
     val currentLedColors = viewModel.ledData.collectAsState()
+    val callingState = viewModel.callingState.collectAsState()
 
-    val testListOfColors = currentLedColors.value?.let { viewModel.convertToColorList(it) }
+    val listOfColors = MutableList(64) { Color.White }
+
 
     val newColorList: MutableList<Color> =
         if (!currentLedColors.value.isNullOrEmpty())
             viewModel.convertToColorList(currentLedColors.value!!)
         else listOfColors
 
-    val callingState = viewModel.callingState.collectAsState()
-
-    val indexList = mutableListOf<Int>()
 
     val indexListState = remember {
         mutableStateListOf<Int>()
@@ -58,9 +55,6 @@ fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
         mutableStateOf(false)
     }
 
-//    val indexListTest = remember(indexList) {
-//        mutableStateOf<List>(indexList)
-//    }
     val isColorPicked = remember {
         mutableStateOf(false)
     }
@@ -110,7 +104,10 @@ fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
 
                     Led(color = colorState.value?.get(index) ?: color) {
                         indexListState.add(index)
-                        Log.d("tag", "Added index: $index")
+                        Log.d("LED", "Added index: $index")
+                        indexListState.forEach {idx ->
+                            Log.d("LED", "Index in list: $idx")
+                        }
                         isColorPickerVisible.value = true
                         currentIndex.value = index
                     }
@@ -157,7 +154,6 @@ fun ColorPicker(
     isColorPicked: MutableState<Boolean>,
     isColorPickerVisible: MutableState<Boolean>,
     indexListState: SnapshotStateList<Int>
-    //indexList: MutableList<Int>
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -188,9 +184,8 @@ fun ColorPicker(
         Button(
             onClick = {
                 isColorPicked.value = true
-//                colorState.value.forEach {
-//                    Log.d("tag", "Color state list element: $it")
-//                }
+
+                // TODO only pass colorState colors where index matches indexiststate
                 viewModel.postLedColors(
                     indexList = indexListState,
                     colorList = colorState.value!!
@@ -200,7 +195,6 @@ fun ColorPicker(
 //                    )
                 )
                 isColorPickerVisible.value = false
-                //indexList.clear()
                 indexListState.clear()
             }
         ) {

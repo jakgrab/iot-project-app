@@ -5,5 +5,6 @@ enum class AirScreens {
     MainScreen,
     GraphScreen,
     LedScreen,
-    SensorScreen
+    SensorScreen,
+    SettingsScreen
 }

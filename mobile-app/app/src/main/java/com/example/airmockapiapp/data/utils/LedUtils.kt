@@ -12,10 +12,11 @@ class LedUtils {
         colorList: List<Color>
     ): ColorData {
 
-        Log.d("Led Utils", "indexList: $indexList, colorList: $colorList")
+        val filteredColors = filterColorsByIndex(indexList, colorList)
+        Log.d("LED", "indexList: $indexList, colorList: $filteredColors")
         return ColorData(
-            requests = indexList.zip(colorList) { index, color ->
-                Log.d("color", "Color: $color")
+            requests = indexList.zip(filteredColors) { index, color ->
+                Log.d("LED", "Color: $color")
                 LedParams(indexToPositionList(index), colorToRgbList(color))
             }
         )
@@ -28,16 +29,20 @@ class LedUtils {
 
     }
 
+    private fun filterColorsByIndex(indexList: List<Int>, colorList: List<Color>): List<Color> {
+        return colorList.filterIndexed { index, _ -> indexList.contains(index) }
+    }
+
     private fun indexToPositionList(index: Int): List<Int> {
         val row = index / 8
         val column = index % 8
-        Log.d("position", "row: $column, column: $row")
+        Log.d("LED", "row: $column, column: $row")
         return listOf(row, column)
     }
 
     private fun colorToRgbList(color: Color): List<Int> {
         Log.d(
-            "color", "colorToRgbList: \n " +
+            "LED", "colorToRgbList: \n " +
                     "red: ${(color.red * 255).toInt()}, \n" +
                     "green: ${(color.green * 255).toInt()}, \n" +
                     "blue: ${(color.blue * 255).toInt()}"

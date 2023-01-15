@@ -2,10 +2,10 @@ package com.example.airmockapiapp.ui.screens.landing
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,43 +24,65 @@ fun LandingScreen(viewModel: MainViewModel, navController: NavController) {
         .fillMaxWidth(0.6f)
         .height(60.dp)
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Raspberry Pi SenseHat Control", fontSize = 25.sp, textAlign = TextAlign.Center)
-            Text(text = "Choose Destination: ", fontSize = 23.sp)
-
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                actions = {
+                    IconButton(
+                        onClick = { navController.navigate(AirScreens.SettingsScreen.name) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Settings,
+                            contentDescription = "navigate back"
+                        )
+                    }
+                }
+            )
+        }
+    ) {
+        Surface(modifier = Modifier.fillMaxSize().padding(it.calculateTopPadding())) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DestinationButton(modifier = modifier, buttonText = "Orientation Chart") {
-                    viewModel.resumeDataStream()
-                    viewModel.getSensorData()
-                    navController.navigate(AirScreens.GraphScreen.name)
+                Text(
+                    text = "Raspberry Pi SenseHat Control",
+                    fontSize = 25.sp,
+                    textAlign = TextAlign.Center
+                )
+                Text(text = "Choose Destination: ", fontSize = 23.sp)
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    DestinationButton(modifier = modifier, buttonText = "Orientation Chart") {
+                        viewModel.resumeDataStream()
+                        viewModel.getSensorData()
+                        navController.navigate(AirScreens.GraphScreen.name)
+                    }
+
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    DestinationButton(modifier = modifier, buttonText = "Set LED Colors") {
+                        viewModel.resumeDataStream()
+                        viewModel.getLedStatus()
+                        navController.navigate(AirScreens.LedScreen.name)
+                    }
+
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    DestinationButton(modifier = modifier, buttonText = "Display Sensor Values") {
+                        viewModel.resumeDataStream()
+                        viewModel.getSensorData()
+                        navController.navigate(AirScreens.SensorScreen.name)
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
-
-                DestinationButton(modifier = modifier, buttonText = "Set LED Colors") {
-                    viewModel.resumeDataStream()
-                    viewModel.getLedStatus()
-                    navController.navigate(AirScreens.LedScreen.name)
-                }
-
-                Spacer(modifier = Modifier.height(50.dp))
-
-                DestinationButton(modifier = modifier, buttonText = "Display Sensor Values") {
-                    viewModel.resumeDataStream()
-                    viewModel.getSensorData()
-                    navController.navigate(AirScreens.SensorScreen.name)
-                }
             }
-
         }
     }
 }

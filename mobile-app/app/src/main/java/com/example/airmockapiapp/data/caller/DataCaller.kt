@@ -23,7 +23,7 @@ class DataCaller(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun callSensorData(
         callingState: StateFlow<CallState>,
-        delay: Long
+        delay: Float
     ): Flow<Response<SensorData>> {
 
         return channelFlow {
@@ -34,7 +34,7 @@ class DataCaller(
                     return@channelFlow
                 }
                 Log.d("Tag", "CALLER RUNNING")
-                delay(delay)
+                delay((delay*1000).toLong())
                 send(
                     repository.getSensorData(
                         temperature = "c",
