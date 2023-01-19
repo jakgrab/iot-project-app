@@ -24,18 +24,12 @@ class MainViewModel : ViewModel() {
 
     private val repository = SenseHatRepository()
 
-    private val _delay = MutableStateFlow<Long>(1000L)
-    val delay = _delay.asStateFlow()
-
     var ddelay: Float = 3f
 
     private val graphUtils = GraphUtils()
     private val ledUtils = LedUtils()
 
     private var xValue: Float = 0f
-
-    private val _responseState = MutableStateFlow<String?>(null)
-    val responseState = _responseState.asStateFlow()
 
     private val _callingState = MutableStateFlow(CallState.ACTIVE)
     val callingState = _callingState.asStateFlow()
@@ -66,7 +60,6 @@ class MainViewModel : ViewModel() {
 
 
     fun getSensorData() {
-
         val sensorData = dataCaller.callSensorData(_callingState, ddelay)
 
         viewModelScope.launch {
@@ -106,7 +99,6 @@ class MainViewModel : ViewModel() {
 
             Log.d("tag", "Response: ${response.body()}")
 
-            //_ledData.value?.let { updateLeds(it) } forgot what it does
         } else {
             Log.d("tag", "Response unsuccessful! ${response.body()}")
         }
@@ -114,25 +106,10 @@ class MainViewModel : ViewModel() {
 
     /////// Graph ///////
     private fun addDataToGraph(data: List<Float>) {
-        //if (isListTooBig(_listOfEntries)) {
         if (graphUtils.isListTooBig(_listOfEntries)) {
             Log.d("tag", "Too big, removing values")
             _listOfEntries.forEach { it.removeAt(0) }
         }
-
-//        _rollList.add(Entry(getXlabel(), data[0]))
-//        _pitchList.add(Entry(getXlabel(), data[1]))
-//        _yawList.add(Entry(getXlabel(), data[2]))
-
-//        _rollList.add(
-//            Entry(graphUtils.getXlabel(xValue, _callingState.value), data[0])
-//        )
-//        _pitchList.add(
-//            Entry(graphUtils.getXlabel(xValue, _callingState.value), data[1])
-//        )
-//        _yawList.add(
-//            Entry(graphUtils.getXlabel(xValue, _callingState.value), data[2])
-//        )
 
         val xValue = getXlabel()
         _rollList.add(
@@ -145,18 +122,10 @@ class MainViewModel : ViewModel() {
             Entry(xValue, data[2])
         )
 
-        Log.d("tag", "First list: ${_listOfEntries[0]}")
-        Log.d("tag", "Second list: ${_listOfEntries[1]}")
-        Log.d("tag", "Third list: ${_listOfEntries[2]}")
-//        Log.d(
-//            "tag",
-//            "Sizes: ${_listOfEntries[0].size}, ${_listOfEntries[1].size}, ${_listOfEntries[2].size}"
-//        )
-
-        //convertEntriesToLineData(_listOfEntries)
         _lineDataSets.value = convertEntriesToLineDataSets(_listOfEntries)
-//        Log.d("tag", "Converted to lineData")
+
     }
+
     private fun getXlabel(): Float {
         return if (_callingState.value == CallState.INACTIVE) 0f else xValue++
     }
@@ -172,30 +141,6 @@ class MainViewModel : ViewModel() {
         )
     }
 
-    // TODO graphUtils used instead
-//    private fun getXlabel(): Float {
-////        return if (_callingState.value == CallState.INACTIVE) 0f else xValue++
-////    }
-//
-//    private fun isListTooBig(listOfEntries: MutableList<MutableList<Entry>>): Boolean {
-//        return listOfEntries.all { it.size >= Constants.GRAPH_VALUES_MAX_SIZE }
-//    }
-//
-//    private fun convertEntriesToLineData(listOfEntries: MutableList<MutableList<Entry>>) {
-//        _lineData.value = LineData(
-//            LineDataSet(listOfEntries[0], "Roll"),
-//            LineDataSet(listOfEntries[1], "Pitch"),
-//            LineDataSet(listOfEntries[2], "Yaw"),
-//        )
-//    }
-
-    /////// Leds ///////
-    // TODO can be put back in LedVM
-
-    private fun updateLeds(ledColors: List<Diode>) {
-        //_ledData.value = ledColors
-    }
-
     fun postLedColors(
         indexList: List<Int>,
         colorList: List<Color>
@@ -207,7 +152,6 @@ class MainViewModel : ViewModel() {
 
         }
         viewModelScope.launch(Dispatchers.IO) {
-//
             val response = repository.postLedColors(colorData)
 
             withContext(Dispatchers.Main) {
@@ -224,27 +168,6 @@ class MainViewModel : ViewModel() {
         return ledUtils.convertToColors(diodeList)
     }
 
-    // TODO ledUtils used instead
-//    private fun toColorData(
-//        indexList: List<Int>,
-//        colorList: List<Color>
-//    ): List<ColorData> {
-//
-//        return indexList.zip(colorList) { index, color ->
-//            ColorData(indexToPositionList(index), colorToRgbList(color))
-//        }
-//    }
-//
-//    private fun indexToPositionList(index: Int): List<Int> {
-//        val row = index / 8
-//        val column = index % 8
-//        return listOf(row, column)
-//    }
-//
-//    private fun colorToRgbList(color: Color): List<Int> {
-//        return listOf(color.red.toInt(), color.green.toInt(), color.blue.toInt())
-//    }
-
     fun cancelDataStream() {
         _callingState.value = CallState.INACTIVE
         Log.d("Data stream", "DATA STREAM INACTIVE")
@@ -254,6 +177,5 @@ class MainViewModel : ViewModel() {
         _callingState.value = CallState.ACTIVE
         Log.d("Data stream", "DATA STREAM ACTIVE")
     }
-    /////// Sensors ///////
 
 }

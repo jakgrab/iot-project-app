@@ -1,6 +1,5 @@
 package com.example.airmockapiapp.ui.screens.ledmatrix
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -60,7 +59,6 @@ fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
     }
 
     val colorState = remember(currentLedColors.value) {
-        //mutableStateOf<List<Color>>(listOfColors)
         mutableStateOf<List<Color>?>(newColorList)
     }
 
@@ -104,10 +102,6 @@ fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
 
                     Led(color = colorState.value?.get(index) ?: color) {
                         indexListState.add(index)
-                        Log.d("LED", "Added index: $index")
-                        indexListState.forEach {idx ->
-                            Log.d("LED", "Index in list: $idx")
-                        }
                         isColorPickerVisible.value = true
                         currentIndex.value = index
                     }
@@ -121,7 +115,6 @@ fun LedMatrix(viewModel: MainViewModel, navController: NavHostController) {
                     isColorPickerVisible = isColorPickerVisible,
                     isColorPicked = isColorPicked,
                     indexListState = indexListState
-                    //indexList = indexList
                 )
             }
 
@@ -166,7 +159,6 @@ fun ColorPicker(
             onColorChanged = { colorEnvelope: ColorEnvelope ->
 
                 indexListState.forEach { ledIndex ->
-                    Log.d("tag", "Index: $ledIndex")
                     colorState.value = colorState.value?.toMutableList().apply {
                         this?.set(ledIndex, colorEnvelope.color)
                     }
@@ -185,14 +177,9 @@ fun ColorPicker(
             onClick = {
                 isColorPicked.value = true
 
-                // TODO only pass colorState colors where index matches indexiststate
                 viewModel.postLedColors(
                     indexList = indexListState,
                     colorList = colorState.value!!
-//                    ColorData(
-//                        index = currentIndex.value!!,
-//                        color = colorState.value[currentIndex.value!!].toString()
-//                    )
                 )
                 isColorPickerVisible.value = false
                 indexListState.clear()

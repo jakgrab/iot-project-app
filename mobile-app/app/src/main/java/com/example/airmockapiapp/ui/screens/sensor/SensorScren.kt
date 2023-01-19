@@ -14,16 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.airmockapiapp.data.caller.CallState
 import com.example.airmockapiapp.data.model.SensorData
 import com.example.airmockapiapp.ui.screens.MainViewModel
-import com.example.airmockapiapp.ui.theme.AirMockApiAppTheme
 
 
 @Composable
@@ -221,7 +218,7 @@ private fun JoystickMovement(data: SensorData?) {
         ) {
             Text(text = "Horizontal position:")
             if (data != null) {
-                Text(text = data.joystick_position[0].toString())
+                Text(text = data.joystickPosition[0].toString())
             }
 
         }
@@ -231,7 +228,7 @@ private fun JoystickMovement(data: SensorData?) {
         ) {
             Text(text = "Vertical position:")
             if (data != null) {
-                Text(text = data.joystick_position[1].toString())
+                Text(text = data.joystickPosition[1].toString())
             }
 
         }
@@ -241,21 +238,10 @@ private fun JoystickMovement(data: SensorData?) {
         ) {
             Text(text = "Pressed:")
             if (data != null) {
-                Text(text = data.joystick_clicks.toString())
+                Text(text = data.joystickClicks.toString())
             }
 
         }
 
-    }
-}
-
-@Preview
-@Composable
-fun SensorScreenPreview() {
-    AirMockApiAppTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-
-            //SensorScreen()
-        }
     }
 }

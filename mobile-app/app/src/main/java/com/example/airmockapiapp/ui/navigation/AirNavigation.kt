@@ -2,18 +2,14 @@ package com.example.airmockapiapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.airmockapiapp.ui.screens.MainViewModel
-import com.example.airmockapiapp.ui.screens.graph.GraphViewModel
 import com.example.airmockapiapp.ui.screens.graph.GraphScreen
 import com.example.airmockapiapp.ui.screens.landing.LandingScreen
 import com.example.airmockapiapp.ui.screens.ledmatrix.LedMatrix
-import com.example.airmockapiapp.ui.screens.ledmatrix.LedScreenViewModel
 import com.example.airmockapiapp.ui.screens.sensor.SensorScreen
-import com.example.airmockapiapp.ui.screens.sensor.SensorViewModel
 import com.example.airmockapiapp.ui.screens.settings.SettingsScreen
 
 @Composable

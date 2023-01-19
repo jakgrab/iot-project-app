@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 
 class DataCaller(
-    //private val viewModel: ApiViewModel,
     private val repository: SenseHatRepository
 ) : Caller {
 

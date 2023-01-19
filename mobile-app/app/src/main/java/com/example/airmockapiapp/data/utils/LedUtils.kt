@@ -1,6 +1,5 @@
 package com.example.airmockapiapp.data.utils
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.example.airmockapiapp.data.model.ColorData
 import com.example.airmockapiapp.data.model.LedParams
@@ -13,10 +12,9 @@ class LedUtils {
     ): ColorData {
 
         val filteredColors = filterColorsByIndex(indexList, colorList)
-        Log.d("LED", "indexList: $indexList, colorList: $filteredColors")
+
         return ColorData(
             requests = indexList.zip(filteredColors) { index, color ->
-                Log.d("LED", "Color: $color")
                 LedParams(indexToPositionList(index), colorToRgbList(color))
             }
         )
@@ -36,18 +34,10 @@ class LedUtils {
     private fun indexToPositionList(index: Int): List<Int> {
         val row = index / 8
         val column = index % 8
-        Log.d("LED", "row: $column, column: $row")
         return listOf(column, row)
     }
 
     private fun colorToRgbList(color: Color): List<Int> {
-        Log.d(
-            "LED", "colorToRgbList: \n " +
-                    "red: ${(color.red * 255).toInt()}, \n" +
-                    "green: ${(color.green * 255).toInt()}, \n" +
-                    "blue: ${(color.blue * 255).toInt()}"
-        )
-
         return listOf(
             (color.red * 255).toInt(),
             (color.green * 255).toInt(),
